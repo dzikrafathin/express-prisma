@@ -1,11 +1,11 @@
-import { Prisma, PrismaClient } from '@prisma/client'
+import cors from 'cors'
 import express from 'express'
 import handler from './handler'
 
-const prisma = new PrismaClient()
 const app = express()
 
 app.use(express.json())
+app.use(cors())
 
 app.post('/daftar', handler.daftar)
 app.post('/login', handler.login)
