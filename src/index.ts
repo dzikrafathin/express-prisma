@@ -2,6 +2,7 @@ import cors from 'cors'
 import express from 'express'
 import handler from './handler'
 import dotenv from 'dotenv'
+import { authJwt } from './auth'
 
 dotenv.config()
 
@@ -10,6 +11,7 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
+app.get('/profil', authJwt, handler.lihatProfil)
 app.post('/daftar', handler.daftar)
 app.post('/login', handler.login)
 

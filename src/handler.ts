@@ -61,6 +61,26 @@ export default {
         }
     
     },
+    async lihatProfil(req: any, res: any) {
+
+        const penulis =
+            await prisma.penulis.findFirst({
+                where: {
+                    id: req.user.id,
+                    email: req.user.email
+                }
+            })
+
+        res.json({
+            status: true,
+            code: 200,
+            data: {
+                id: penulis?.id,
+                nama: penulis?.nama,
+                email: penulis?.email
+            }
+        })
+    },
     async daftarPostingan(req: any, res: any) {
         const daftarPostingan = 
             await prisma.postingan.findMany({
