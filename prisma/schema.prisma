@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Penulis {
+  id Int @default(autoincrement()) @id
+  nama String? 
+  email String @unique
+  password String
+  postingan Postingan[]
+}
+
+model Postingan {
+  id Int @default(autoincrement()) @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  judul String @db.VarChar(255)
+  isi String? @db.Text
+  published Boolean @default(false)
+  penulis Penulis @relation(fields: [penulisId], references: [id])
+  penulisId Int
+}
+
+
+
