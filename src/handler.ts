@@ -1,4 +1,6 @@
 import { PrismaClient } from '@prisma/client'
+import { generateAccessToken } from './auth'
+
 const prisma = new PrismaClient()
 
 export default {
@@ -35,11 +37,19 @@ export default {
                 })
             }
     
+            const token = generateAccessToken(
+                penulis.id,
+                penulis.email
+            )
+
             res.json({
                 status: true,
                 code: 200,
                 message: "Login berhasil",
-                data: penulis
+                data: {
+                    ...penulis,
+                    token
+                }
             })
     
         } else {

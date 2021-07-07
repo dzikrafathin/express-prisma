@@ -1,6 +1,9 @@
 import cors from 'cors'
 import express from 'express'
 import handler from './handler'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const app = express()
 
