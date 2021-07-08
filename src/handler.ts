@@ -82,10 +82,13 @@ export default {
         })
     },
     async daftarPostingan(req: any, res: any) {
+
+        const idPenulis = req.user.id;
+
         const daftarPostingan = 
             await prisma.postingan.findMany({
                 where: {
-                    published: true
+                    penulisId: idPenulis,
                 },
                 select: {
                     id: true,
@@ -109,7 +112,9 @@ export default {
         })
     },
     async tambahPostingan(req: any, res: any) {
-        const {email, judul, isi} = req.body
+
+        const {judul, isi} = req.body
+        const { email } = req.user;
 
         const postinganBaru = 
             await prisma.postingan.create({
@@ -137,6 +142,21 @@ export default {
 
         const { id } = req.params
 
+        const idPenulis = req.user.id;
+
+        const postinganPenulisId = await prisma.postingan.findFirst({
+            where: {
+                id: Number(id)
+            },
+            select: {
+                penulisId: true
+            }
+        })
+
+        if (postinganPenulisId?.penulisId != idPenulis) {
+            res.sendStatus(403);
+        }
+        
         const postingan = await prisma.postingan.findFirst({
             where: {id: Number(id)},
             select: {
@@ -166,9 +186,25 @@ export default {
     async ubahPostingan(req: any, res: any) {
         const { id } = req.params
 
+        const idPenulis = req.user.id;
+
+        let postingan = 
+            await prisma.postingan.findFirst({
+                where: {
+                    id: Number(id)
+                },
+                select: {
+                    penulisId: true
+                }
+            })
+        
+        if (postingan?.penulisId != idPenulis) {
+            res.sendStatus(403);
+        }
+
         const { judul, isi } = req.body
-    
-        const postingan = 
+
+        postingan = 
             await prisma.postingan.update({
                 data: {
                     judul,
@@ -190,7 +226,21 @@ export default {
         })
     },
     async publishPostingan(req: any, res: any) {
+
         const { id } = req.params
+
+        const idPenulis = req.user.id;
+
+        const postingan = 
+            await prisma.postingan.findFirst({
+                where: {
+                    id: Number(id)
+                }
+            })
+        
+        if (postingan?.penulisId != idPenulis) {
+            res.sendStatus(403);
+        }
 
         await prisma.postingan.update({
             where: {
@@ -210,6 +260,21 @@ export default {
     },
     async hapusPostingan(req: any, res: any) {
         const { id } = req.params
+
+        const idPenulis = req.user.id
+
+        const postingan = await prisma.postingan.findFirst({
+            where: {
+                id: Number(id)
+            },
+            select: {
+                penulisId: true
+            }
+        })
+
+        if (postingan?.penulisId != idPenulis) {
+            res.sendStatus(403);
+        }
 
         await prisma.postingan.delete({
             where: {
